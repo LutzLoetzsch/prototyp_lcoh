@@ -1,0 +1,21 @@
+# ---------------------------------------------------------------------------
+# requirements.txt
+# ---------------------------------------------------------------------------
+# Installation:  pip install -r requirements.txt
+#
+# Abhängigkeiten des KWP-Prototyps.
+#
+# Installation:
+#     pip install -r requirements.txt
+
+# ---------------------------------------------------------------------------
+
+# --- Laufzeit ---
+numpy>=1.24        # Arrayrechnung (Sampler, Generator)
+scipy>=1.10        # qmc.LatinHypercube (Sampling), spearmanr/gaussian_kde (Plots)
+pandas>=2.0        # Ergebnis-DataFrame des Generators
+matplotlib>=3.7    # Thesis-Abbildungen (Reporting)
+torch>=2.2
+
+# --- Tests ---
+pytest>=7.4        # Testsuite (test_*.py)

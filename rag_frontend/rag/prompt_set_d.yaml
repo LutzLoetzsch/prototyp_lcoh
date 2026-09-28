@@ -1,0 +1,113 @@
+referenzszenario: S3_wp_nahwaerme
+szenarien_datei: wissensbasis/szenarien.yaml
+
+quellenmarken:
+  - Hotmaps
+  - Zensus
+  - VG250
+  - BKG
+  - Persson
+  - KWW
+  - Technikkatalog
+  - dena
+  - RBV
+  - SAENA
+
+kommunen:
+  johanngeorgenstadt:
+    profil: wissensbasis/kommune_johanngeorgenstadt.yaml
+    ags: "14521320"
+  weisswasser:
+    profil: wissensbasis/weisswasser.yaml
+    ags: "14626240"
+
+prompts:
+
+  - id: D1
+    kommune: johanngeorgenstadt
+    leistung: L1
+    prompt: >
+      Wir müssen bis Mitte 2028 unseren Wärmeplan vorlegen. Können Sie mir
+      sagen, ob sich für uns in Johanngeorgenstadt ein Wärmenetz überhaupt
+      rechnet?
+    prueft: >
+      Einstieg ohne Fachbegriffe. Ohne die Schnittstelle müsste der
+      Bearbeiter 19 Parameter kennen, um dieselbe Rechnung auszulösen.
+
+  - id: D2
+    kommune: johanngeorgenstadt
+    leistung: L2
+    prompt: >
+      Der Gemeinderat will Zahlen sehen. Was kostet die Wärme aus so einem
+      Netz bei uns ungefähr pro Megawattstunde?
+    prueft: >
+      Kommunenspezifischer Wert. Unter V1 kann nur der Modelldefault kommen,
+      unter V2 ein Wert, der auf Hotmaps und Zensus beruht.
+
+  - id: D3
+    kommune: johanngeorgenstadt
+    leistung: L3
+    kernprompt: true
+    prompt: >
+      Woher haben Sie diese Zahlen? Ich muss das im Ausschuss belegen können.
+    prueft: >
+      KERNPROMPT DER ARBEIT. Unter V1 gibt es nichts zu nennen, unter V2
+      Hotmaps, Zensus 2022, VG250 und Persson & Werner mit Bezugsjahr und
+      Lizenz. Das ist der Unterschied zwischen einer Zahl und einer belegten
+      Zahl -- und nach § 13 WPG der Unterschied zwischen unbrauchbar
+      und verwendbar.
+
+  - id: D4
+    kommune: johanngeorgenstadt
+    leistung: L1
+    prompt: >
+      Wir haben im Ortskern etwa sechs Kilometer Leitung im Blick und rechnen
+      mit rund 12.700 Megawattstunden im Jahr. Ändert das etwas an der
+      Rechnung?
+    erwartung_kanalisierung:
+      soll_felder: [trassenlaenge_m, waermelieferung_mwh_a]
+      darf_nicht: [waermeliniendichte]
+    prueft: >
+      Der Bearbeiter bringt eigene Zahlen mit. Das Modell soll beide Größen
+      weiterreichen; die Wärmeliniendichte bildet der Vertrag selbst
+      (cli_entscheidung.HERLEITUNG). Rechnet das Modell selbst, ist das ein
+      Fehler -- auch wenn das Ergebnis stimmt.
+
+  - id: D5
+    kommune: johanngeorgenstadt
+    leistung: L3
+    prompt: >
+      Wie sicher sind diese Zahlen eigentlich? Ich möchte im Ausschuss nichts
+      behaupten, was nicht stimmt.
+    prueft: >
+      Datenstand und Grenzen. Erwartet wird die Unterscheidung zwischen
+      belegten, hergeleiteten und angenommenen Werten -- und die Benennung des
+      Bezugsjahrs 2015 der Hotmaps-Daten.
+
+  - id: D6
+    kommune: weisswasser
+    leistung: L2
+    prompt: >
+      Und wie sieht das bei uns in Weißwasser aus?
+    prueft: >
+      Ortsbezug. Unter V1 liefert das System dieselbe Zahl wie für
+      Johanngeorgenstadt (gemessen 08.08.: 154,81 EUR/MWh für beide),
+      unter V2 einen anderen.
+
+  - id: D7
+    kommune: johanngeorgenstadt
+    leistung: L2
+    prompt: >
+      Noch eine Frage: Was kostet so eine Großwärmepumpe eigentlich, und wie
+      lange hält die? Ich brauche das für die Kostenschätzung.
+    prueft: >
+      2026-08-08 ergänzt. FACHLICHE Referenzdaten statt kommunaler Daten.
+      Unter V1 kann das Modell nur aus dem Gedächtnis antworten -- ohne
+      Quelle, ohne Stützjahr, ohne Geltungsrahmen. Unter V2 steht der
+      Technikkatalog im Kontext: Gewässer-WP 279-978 EUR/kW bei 25 Jahren
+      Lebensdauer, TK Tab 28, Stützjahr 2023.
+      BESONDERS AUSSAGEKRÄFTIG, weil ein Sprachmodell hier PLAUSIBEL falsch
+      antworten kann -- Investitionskosten für Wärmepumpen sind
+      Allgemeinwissen genug, dass eine erfundene Zahl nicht auffällt. Erst
+      der Quellennachweis trennt Wissen von Erinnerung.
+

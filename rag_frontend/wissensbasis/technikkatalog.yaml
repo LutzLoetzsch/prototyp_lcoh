@@ -1,0 +1,227 @@
+_meta:
+  name: "KWW-Technikkatalog Wärmeplanung"
+  version: "v1.1 (Aug 2024)"
+  stuetzjahr: 2023
+  waehrung: "EUR 2023, netto"
+  lizenz: "CC-BY"
+  geltungsrahmen: >
+    Bundesweite Durchschnittswerte. Der Katalog weist ausdrücklich darauf hin,
+    dass tatsächliche Kosten lokal erheblich abweichen und im Einzelfall zu
+    prüfen sind. Spannen sind die Bandbreite über die tabellierten
+    Leistungsklassen.
+  herkunft_dieser_datei: >
+    Übernommen aus K07 (Domänen- und Modellspezifikation), dort mit Tab- und
+    Zeilenbezug gepinnt. Keine Neuerhebung aus der Katalog-Excel.
+
+# ---------------------------------------------------------------------------
+# Wärmepumpen — dezentral
+# ---------------------------------------------------------------------------
+waermepumpe_dezentral:
+  luft_wasser:
+    leistung: "5–110 kW_th"
+    jahresarbeitszahl: "2,6 (Altbau unsaniert) / 3,0 (saniert) / 3,75 (Neubau mit Flächenheizung)"
+    lebensdauer_a: 18
+    investition_eur_pro_kw: "1.206–2.288"
+    betrieb_eur_pro_kw_a: "14–76"
+    quelle: "KWW-TK v1.1, Tab 10, Stützjahr 2023; JAZ ±0,2"
+    status: belegt
+    projektnotiz: >
+      Das Modell rechnet im Code mit 20 a statt der katalogierten 18 a.
+      Abweichung dokumentiert (Systemdokumentation, C-3 Befund 4), offen.
+  wasser_wasser:
+    leistung: "5–110 kW_th"
+    jahresarbeitszahl: "3,96 / 4,55 / 5,35"
+    lebensdauer_a: 20
+    investition_eur_pro_kw: "2.112–4.647 (inkl. Brunnen)"
+    betrieb_eur_pro_kw_a: "7–76"
+    quelle: "KWW-TK v1.1, Tab 11, Stützjahr 2023; JAZ ±0,1"
+    status: belegt
+  sole_wasser:
+    leistung: "5–110 kW_th"
+    jahresarbeitszahl: "3,15 / 3,6 / 4,6"
+    lebensdauer_a: "20 (Erdwärmesonde 50)"
+    investition_eur_pro_kw: "1.985–4.865 (inkl. Sonden)"
+    betrieb_eur_pro_kw_a: "11–76"
+    quelle: "KWW-TK v1.1, Tab 12, Stützjahr 2023; JAZ ±0,2"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# Großwärmepumpen — netzgebunden
+# ---------------------------------------------------------------------------
+grosswaermepumpe:
+  luft:
+    leistung: "0,3–20 MW_th"
+    jahresarbeitszahl: 2.8
+    lebensdauer_a: 25
+    investition_eur_pro_kw: "651–1.861"
+    betrieb_eur_pro_kw_a: "16–47"
+    quelle: "KWW-TK v1.1, Tab 26, Stützjahr 2023 (+15 % bei Netz 40–80 °C)"
+    status: belegt
+  abwaerme:
+    leistung: "0,3–20 MW_th"
+    jahresarbeitszahl: 4.2
+    lebensdauer_a: 25
+    investition_eur_pro_kw: "546–1.861"
+    betrieb_eur_pro_kw_a: "14–47"
+    quelle: "KWW-TK v1.1, Tab 27, Stützjahr 2023"
+    status: belegt
+  gewaesser:
+    leistung: "10–50 MW_th"
+    jahresarbeitszahl: 3.0
+    lebensdauer_a: 25
+    investition_eur_pro_kw: "279–978"
+    betrieb_eur_pro_kw_a: "7–24"
+    quelle: "KWW-TK v1.1, Tab 28, Z. 7, Stützjahr 2023"
+    status: belegt
+  klaerwasser:
+    leistung: "1–10 MW_th"
+    jahresarbeitszahl: 2.9
+    lebensdauer_a: 20
+    investition_eur_pro_kw: "719–1.243"
+    betrieb_eur_pro_kw_a: "18–31"
+    quelle: "KWW-TK v1.1, Tab 30, Stützjahr 2023"
+    status: belegt
+    projektnotiz: >
+      Diese Zeile liefert das im Modell verwendete Band für capex_wp
+      (719–1.243 EUR/kW), maßgeblich seit Korb 1.
+  grubenwasser:
+    jahresarbeitszahl: "≈ 3,0 (Näherung über Tab 28)"
+    quelle: "keine eigene Katalogzeile"
+    status: annahme
+    hinweis: >
+      Der Katalog führt Grubenwasser nicht eigens. Die Jahresarbeitszahl ist
+      über die Gewässer-Zeile genähert.
+    projektnotiz: >
+      FF3-Grenze. Im Code ist die Quellentemperatur 26 °C gesetzt. Als
+      Modellgrenze zu berichten.
+
+# ---------------------------------------------------------------------------
+# Biomasse
+# ---------------------------------------------------------------------------
+biomasse:
+  pelletkessel_dezentral:
+    leistung: "10–110 kW_th"
+    nutzungsgrad: "81–90 % (kleine Geräte 10–20 kW: 90 %, größere 30–110 kW: 81 %)"
+    lebensdauer_a: 20
+    investition_eur_pro_kw: "414–1.428"
+    betrieb_eur_pro_kw_a: "25–86"
+    quelle: "KWW-TK v1.1, Tab 2, Stützjahr 2023; CAPEX ±0,15"
+    status: belegt
+  hackschnitzelkessel_dezentral:
+    leistung: "20–110 kW_th"
+    nutzungsgrad: "94 %"
+    lebensdauer_a: 20
+    investition_eur_pro_kw: "414–1.891"
+    betrieb_eur_pro_kw_a: "27–123"
+    quelle: "KWW-TK v1.1, Tab 3, Stützjahr 2023; ±0,15"
+    status: belegt
+  heizwerk_hackschnitzel:
+    leistung: "6,1 MW_th (Referenzanlage)"
+    nutzungsgrad: "90 %"
+    lebensdauer_a: 28
+    investition_eur_pro_kw: 692
+    betrieb: "5.182 EUR/MW·a + 3 EUR/MWh variabel"
+    quelle: "KWW-TK v1.1, Tab 21, Z. 7, Stützjahr 2023; ±0,20"
+    status: belegt
+    hinweis: >
+      Nur eine Stützanlage; im Feld ist größere Streubreite zu erwarten
+      (Anmerkung im Katalog).
+  heizwerk_pellets:
+    leistung: "5,8 MW_th (Referenzanlage)"
+    nutzungsgrad: "90 %"
+    lebensdauer_a: 28
+    investition_eur_pro_kw: 717
+    betrieb: "5.557 EUR/MW·a + 2 EUR/MWh variabel"
+    quelle: "KWW-TK v1.1, Tab 22, Stützjahr 2023; ±0,20"
+    status: belegt
+  biogas_bhkw:
+    leistung: "2–10.000 kW_el / 4,8–9.149 kW_th"
+    wirkungsgrad: "el 28–46 % / th 42–66 % / gesamt 87–96 % (auf Heizwert)"
+    lebensdauer_a: 15
+    investition: "1.256–8.579 EUR/kW_th"
+    betrieb: "10–174 EUR/kW_th·a + 9–44 EUR/MWh_th variabel"
+    quelle: "KWW-TK v1.1, Tab 16, Stützjahr 2023; ±0,15"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# Gas — Referenztechnologie
+# ---------------------------------------------------------------------------
+gas:
+  brennwert_dezentral:
+    nutzungsgrad: "99,4 % bei 30 kW"
+    lebensdauer_a: 20
+    quelle: "KWW-TK v1.1, Tab 4, Z. 8 (Nutzungsgrad) / Z. 9 (Lebensdauer)"
+    status: belegt
+  brennwert_zentral:
+    nutzungsgrad: "99 %"
+    lebensdauer_a: 25
+    quelle: "KWW-TK v1.1, Tab 33, Z. 7 (Nutzungsgrad) / Z. 8 (Lebensdauer)"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# Wärmenetz
+# ---------------------------------------------------------------------------
+netz:
+  konventionell:
+    verlustanteil: "12,3 % Leitung (Z. 8) + 4,5 % Übergabe (Z. 11) = 14,0–16,3 %"
+    lebensdauer_a: 40
+    hauptleitung_eur_pro_m: "692–2.459 (unbefestigt/ländlich)"
+    spez_verteilkosten_eur_pro_mwh_a: "739 ländlich / 1.045 teilbefestigt / 1.351 innerstädtisch"
+    betriebskostenanteil: 0.002
+    quelle: "KWW-TK v1.1, Tab 42 — Z. 8, Z. 11, Z. 14, Z. 17–19, Z. 25, Z. 33"
+    status: belegt
+    hinweis: >
+      Die spezifischen Verteilkosten (Z. 17–19) enthalten die Wärmeliniendichte
+      bereits und sind deshalb kein Eingang einer zweifaktoriellen Rechnung.
+    projektnotiz: >
+      Validierungsanker: Das Modell rechnet c_d = netz_invest / Q_l und ist
+      gegen diese Werte zu prüfen.
+      OFFEN: Führt Tab 42 neben Z. 33 eine Fix-O&M-Zeile?
+  niedertemperatur:
+    verlustanteil: "10–12,3 %"
+    lebensdauer_a: 40
+    spez_verteilkosten_eur_pro_mwh_a: "586 / 829 / 1.071"
+    quelle: "KWW-TK v1.1, Tab 44, Stützjahr 2023"
+    status: belegt
+  kalte_nahwaerme:
+    verlustanteil: "keine Verluste (Wärmegewinn +20 %)"
+    lebensdauer_a: 50
+    hauptleitung_eur_pro_m: "140–293 (DN 75–250)"
+    quelle: "KWW-TK v1.1, Tab 45, Stützjahr 2023"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# Emissionsfaktoren
+# ---------------------------------------------------------------------------
+emissionsfaktoren:
+  strom_mix_d_2025:
+    wert_t_pro_mwh: 0.260
+    quelle: "KWW-TK v1.1, Tab 1"
+    status: belegt
+  erdgas:
+    wert_t_pro_mwh: 0.240
+    quelle: "KWW-TK v1.1, Tab 1, Z. 7"
+    status: belegt
+  holz_biogen:
+    wert_t_pro_mwh: 0.020
+    quelle: "KWW-TK v1.1, Tab 1 (20 g/kWh)"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# Hinweise
+# ---------------------------------------------------------------------------
+_hinweise:
+  - >
+    Diese Datei ist eine ÜBERFÜHRUNG aus K07, keine Neuerhebung. Werte, die
+    K07 nicht mit Tab-Bezug führt, stehen hier nicht. Insbesondere fehlen
+    Nutzungsgrade für Heizöl, Kohle, Strom-Direktheizung und Fernwärme im
+    Gebäudebestand — sie sind für die η-Herleitung aus dem Zensus-Mix
+    erforderlich und bislang unbelegt.
+  - >
+    VERSIONSKONFLIKT: K07 zitiert v1.1 (Aug 2024), K06 zitiert die Fassung
+    Dezember 2025. Vor der Textproduktion zu klären, welche Fassung
+    maßgeblich ist. Die Tab-Nummern hier folgen K07.
+  - >
+    Der Katalog-Disclaimer (bundesweite Durchschnittswerte, lokal erheblich
+    abweichend) gehört in jede Antwort, die sich auf diese Werte stützt. Er
+    ist Teil des Quellennachweises, nicht eine Fußnote.

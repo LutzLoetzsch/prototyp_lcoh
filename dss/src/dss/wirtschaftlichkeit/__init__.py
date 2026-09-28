@@ -1,0 +1,1 @@
+"""Wirtschaftlichkeit: Annuitätsmethode nach VDI 2067."""

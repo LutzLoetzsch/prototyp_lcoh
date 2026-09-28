@@ -1,0 +1,1 @@
+"""Szenariodefinitionen (Bänder, Auswertung)."""

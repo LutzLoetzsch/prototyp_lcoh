@@ -1,0 +1,1 @@
+"""Fachmodell: Erzeugervarianten, Enumerationen, Realisierung."""

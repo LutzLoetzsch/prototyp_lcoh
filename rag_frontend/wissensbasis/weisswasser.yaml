@@ -1,0 +1,240 @@
+
+
+_meta:
+  name: "Weisswasser (Lausitz, Strukturwandel)"
+  bundesland: "Sachsen"
+  rolle_im_design: >
+    Maximum-Variation-Fall 2: NICHT-MONOTON. Haushaltssegment sinkt, Industrie
+    kommt als Neuansiedlung mit Grossanschluss hinzu. Zeigt, warum zwei Segmente,
+    beide Richtungen und eine explizite Jahresreihe (nicht nur eine Rate) noetig
+    sind -- der anspruchsvollste Trajektorienfall.
+  betrachtungszeitraum: { wert: 20, einheit: "a", quelle: "", status: annahme }
+  ff3_vorbehalt: >
+    Die Anlage ist auf den Anfangsbedarf ausgelegt; der spaetere Grossanschluss
+    wird ohne gestufte Kapazitaetserweiterung bedient -- das LCOH-Ergebnis ist
+    daher die OPTIMISTISCHE GRENZE des Wachstumsfalls (als Grenze auszuweisen).
+
+# ---------------------------------------------------------------------------
+# 1 STAMMDATEN
+# ---------------------------------------------------------------------------
+stammdaten:
+  einwohner:
+    wert: null
+    einheit: "EW"
+    quelle: "Zensus 2022 (Gemeinde) / StLA Sachsen"
+    status: zu_beschaffen   # AUFTRAG A -- offen, vorgesehen fuer G1b
+
+# ---------------------------------------------------------------------------
+# 2 WAERMEBEDARF — AUFTRAG 1 (entscheidungswirksam, §6). Zwei Segmente, nicht-monoton.
+# ---------------------------------------------------------------------------
+waermebedarf:
+  segment_haushalt:
+    q0:
+      wert: 89330.0
+      einheit: "MWh/a"
+      quelle: "ILLUSTRATIV -- Groessenordnung aus G1a: Versorgungsgebiet Weisswasser
+               95.830 MWh/a (Hotmaps heat_tot 2015, CC BY 4.0, DOI 10.5281/zenodo.4687129,
+               korrigiert mit eta=0,87) abzueglich Industriebestand 600 MWh/a.
+               KEIN belegter Segmentwert: Hotmaps heat_tot trennt nicht nach Sektor.
+               Belegbar ueber heat_res_curr_density (Wohngebaeude) -- offen."
+      status: illustrativ
+    rate:
+      wert: -1.2
+      einheit: "%/a"
+      quelle: "9. RBV Sachsen (StLA, 07.05.2026, Lausitz stark ruecklaeufig) + dena 2026 Abb. 76; sinngemaess"
+      status: belegt
+  segment_industrie:       # NICHT-MONOTON -> explizite Reihe, nicht als Rate abbildbar
+    typ: "neuansiedlung_mit_stufe"
+    # ILLUSTRATIV 2026-08-07: Die vier folgenden Werte sind die Codewerte aus den
+    # urspruenglichen Kommentaren. Sie werden gesetzt, damit der nicht-monotone
+    # Reihenpfad (profil.bedarfsreihe_aus_profil) ueberhaupt rechenbar wird und
+    # der Betrachtungszeitraum aus _meta uebergeben wird.
+    # KEINE Kommunenwerte. Ansiedlungsplanung ist lokale Planungsinformation und
+    # in keiner oeffentlichen Quelle enthalten -- das ist eine FF3-Grenze und
+    # als solche zu berichten, nicht zu kaschieren.
+    bestand_vor_anschluss:
+      wert: 600.0
+      einheit: "MWh/a"
+      quelle: ""
+      status: illustrativ
+    neu_ab_anschluss:
+      wert: 6500.0
+      einheit: "MWh/a"
+      quelle: ""
+      status: illustrativ
+    anschlussjahr:
+      wert: 4
+      einheit: "Jahr im Betrachtungszeitraum"
+      quelle: ""
+      status: illustrativ
+    wachstumsrate:
+      wert: 1.0
+      einheit: "%/a"
+      quelle: ""
+      status: illustrativ
+
+# ---------------------------------------------------------------------------
+# 3 TRAJEKTORIE
+# ---------------------------------------------------------------------------
+trajektorie:
+  struktur:
+    wert: "nicht_monoton"
+    quelle: "Segment.aus_reihe (Haushalt sinkt, Industrie steigt stufenweise)"
+    status: belegt          # kein einzelner bedarfsrate-Wert abbildbar -> _hinweise
+  haushaltsrate:
+    wert: -1.2
+    einheit: "%/a"
+    quelle: "9. RBV Sachsen + dena 2026 Abb. 76; sinngemaess"
+    status: belegt
+
+# ---------------------------------------------------------------------------
+# 4 NETZ — AUFTRAG 2 (Q_l/Anschlussgrad) + AUFTRAG 4 (Foerderung)
+# ---------------------------------------------------------------------------
+netz:
+  terrain:
+    wert: "laendlich/flach (Lausitz)"
+    einheit: "-"
+    quelle: "Einordnung Lausitz, flaches Terrain"
+    status: annahme
+  investition_eur_pro_m:
+    wert: null            # belegt via TK-Formel; Wert folgt aus Leistungsklasse P (aus Q0/VLh)
+    einheit: "EUR/m"
+    quelle: "KWW-TK v1.1, Tab 42, Z. 25 (Hauptleitung unbefestigt/laendlich 692-2459) bzw. Z. 10-12 (a*P^b, a=284.93, b=0.2001); sinngemaess"
+    status: belegt        # Zwei-Faktor-Form: c_d = netz_invest / Q_l; Q_l bleibt frei (Auftrag 2, Befund 2 = a)
+  netzkosten_validierungsanker:
+    wert: 739
+    einheit: "EUR/(MWh*a)"
+    quelle: "KWW-TK v1.1, Tab 42, Z. 17 (laendlich = Gesamtkosten/Jahreswaermemenge, Anm. E); sinngemaess"
+    status: belegt        # VALIDIERUNG, KEIN Input: Modell-c_d bei Referenzdichte muss ~739 treffen
+  waermeliniendichte_ql:
+    wert: null
+    einheit: "MWh/(m*a)"
+    quelle: "GIS/Siedlungsgeometrie; kommunale Waermeplanung"
+    status: zu_beschaffen
+    # 2026-08-07: BEWUSST auf null. Q_l wird seit G1a im dss aus
+    # trassenlaenge_m und waermelieferung_mwh_a hergeleitet
+    # (cli_entscheidung.HERLEITUNG). Ein Wert hier wuerde die Herleitung
+    # ueberschreiben (profil.py bildet dieses Feld direkt auf den
+    # M6-Parameter waermeliniendichte ab).
+    # Abgeleiteter Wert zur Einordnung: 2,8710 MWh/(m*a) -- Obergrenze.
+  anschlussgrad:
+    wert: null              # AUFTRAG 2 (Teil)
+    einheit: "%"
+    quelle: "kommunale Waermeplanung"
+    status: zu_beschaffen
+    # FF3/FF4: bewusst NICHT aus Hotmaps korrigiert. Der Anschlussgrad ist
+    # keine Dateneigenschaft, sondern eine kommunale PLANUNGSGROESSE und
+    # gehoert als Szenarioachse in die Auswertung. Solange er offen ist,
+    # sind trassenlaenge_m/waermelieferung_mwh_a eine Obergrenze
+    # (Persson & Werner 2011, S. 573: Modell unterstellt 100 % Anschluss).
+  verlustanteil:
+    wert: 16.0
+    einheit: "%"
+    quelle: "KWW-TK v1.1, Tab 42: Leitung 12,3 % (Z. 8) + Uebergabe 4,5 % (Z. 11); sinngemaess"
+    status: belegt
+  lebensdauer:
+    wert: 40
+    einheit: "a"
+    quelle: "KWW-TK v1.1, Tab 42, Z. 14; sinngemaess"
+    status: belegt
+  trassenlaenge_m:
+    wert: 33379.3
+    einheit: "m"
+    quelle: "Hotmaps heat_tot/gfa_tot (2015, CC BY 4.0, DOI 10.5281/zenodo.4687129);
+             effektive Breite je Hektarzelle nach Persson & Werner (2011), S. 571 Gl. (8);
+             Gebietsabgrenzung plot ratio >= 0.15, ebd. S. 574;
+             Gemeindeumriss VG250 GF=4, Gebietsstand 15.05.2022 (BKG);
+             251 qualifizierende Hektarzellen"
+    status: hergeleitet
+  waermelieferung_mwh_a:
+    wert: 95830.5
+    einheit: "MWh/a"
+    quelle: "Hotmaps heat_tot_curr_density (2015, Endenergie), Rohsumme 110.150 MWh/a
+             ueber 251 Hektarzellen; korrigiert x0.8700 (Gesamtfaktor 0.8700);
+             K1 Endenergie->Nutzwaerme eta=0.87 (M6-Band 0,82..0,92, Mitte; ANNAHME,
+             belegbar ueber Energietraegermix Zensus 2022);
+             K2 nicht angewandt -- nicht-monotone Trajektorie, Korrektur ueber
+             bedarfsreihe. Bezugsjahr des Werts ist 2015."
+    status: hergeleitet
+
+# ---------------------------------------------------------------------------
+# 5 ERZEUGER (Punktwerte in belegten TK-Baendern)
+# ---------------------------------------------------------------------------
+erzeuger:
+  biomasse:               # S1-Baustein (Lausitzer Forst)
+    wirkungsgrad:
+      wert: 0.88
+      einheit: "-"
+      quelle: "KWW-TK v1.1 (Biomasse-Heizwerk); Zeile beim Uebertrag pinnen"
+      status: illustrativ
+    investitionskosten:
+      wert: null            # Code: 550 (illustrativ) -> TK-Zeile pinnen
+      einheit: "EUR/kW"
+      quelle: "KWW-TK v1.1 (Biomasse-Heizwerk); Tab/Zeile zu pinnen"
+      status: zu_beschaffen
+    emissionsfaktor:
+      wert: 0.020
+      einheit: "t/MWh"
+      quelle: "KWW-TK v1.1, Tab 1 (Holz biogen, 20 g/kWh); sinngemaess"
+      status: belegt
+  gewaesser_wp:           # S3-Baustein: Gewaesser-WP ODER Industrie-Abwaerme (Neuansiedlung)
+    jahresarbeitszahl:
+      wert: null
+      einheit: "-"
+      quelle: "KWW-TK v1.1, Tab 27/28 (WP Gewaesser/Abwaerme); Quelle vor Ort zu belegen"
+      status: zu_beschaffen
+
+# ---------------------------------------------------------------------------
+# 6 REALISIERUNG
+# ---------------------------------------------------------------------------
+realisierung:
+  wacc:
+    wert: 0.045
+    einheit: "-"
+    quelle: ""
+    status: annahme
+  volllaststunden:
+    wert: 2500
+    einheit: "h/a"
+    quelle: "Auslegungsannahme Nahwaerme-Heizwerk"
+    status: annahme
+  energiepreis_holz:
+    wert: 32.5
+    einheit: "EUR/MWh"
+    quelle: "Band (Hackschnitzel); TK/SAENA-Beleg beim Uebertrag pinnen"
+    status: illustrativ
+  foerderquote_netz:
+    wert: null              # AUFTRAG 4 (M17): BEW
+    einheit: "-"
+    quelle: "BEW (Bundesfoerderung effiziente Waermenetze)"
+    status: zu_beschaffen
+  foerderquote_dezentral:
+    wert: null              # AUFTRAG 4 (M17): BEG/BAFA/KfW
+    einheit: "-"
+    quelle: "BEG/BAFA; KfW"
+    status: zu_beschaffen
+
+# ---------------------------------------------------------------------------
+# 7 POTENZIAL (Sinnhaftigkeits-Grundlage fuer die LLM-Szenariowahl)
+# ---------------------------------------------------------------------------
+potenzial:
+  biomasse:
+    wert: "Lausitzer Forst vorhanden"
+    quelle: "Bundeswaldinventur; Kompare 2026, Abschn. 6.4 (Potenzialgrenze); sinngemaess"
+    status: belegt          # -> S1 plausibel
+  industrie_abwaerme:
+    wert: null
+    quelle: "Ansiedlungsprojekt (lokal) -- speist S3-Sinnhaftigkeit"
+    status: zu_beschaffen   # -> S3 erst nach Beleg
+  solarstrahlung:
+    wert: null
+    einheit: "kWh/(m2*a)"
+    quelle: "DWD-Strahlungsdaten / SAENA"
+    status: zu_beschaffen   # -> S5: flaches Terrain + offene Flaechen (Tagebaufolge)
+
+
+    ETA-ANNAHME: Die Korrektur K1 (Endenergie -> Nutzwaerme) verwendet
+    eta = 0,87, die Mitte des M6-Bandes 0,82..0,92. Das ist eine Annahme.
+    Ueber das Band verschiebt sich Q_l um rund +/- 0,17 -- fuer Weisswasser
+    ohne Folge fuer die Rangfolge, fuer Johanngeorgenstadt entscheidend.
+    Belegbar ueber den Energietraegermix aus Zensus 2022 (G1b).

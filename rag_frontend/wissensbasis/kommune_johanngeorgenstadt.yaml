@@ -1,0 +1,220 @@
+_meta:
+  name: "Johanngeorgenstadt (Erzgebirgskreis)"
+  bundesland: "Sachsen"
+  rolle_im_design: >
+    Maximum-Variation-Fall 1: monotone Schrumpfung beider Bedarfssegmente
+    (Regelfall Sachsen). Trägt die Bedarfstrajektorie im Rückgang und die
+    S3-Zelle (Grubenwasser-WP) der Kommune×Szenario-Matrix.
+  betrachtungszeitraum: { wert: 20, einheit: "a", quelle: "", status: annahme }
+
+# ---------------------------------------------------------------------------
+# 1 STAMMDATEN
+# ---------------------------------------------------------------------------
+stammdaten:
+  einwohner:
+    wert: null
+    einheit: "EW"
+    quelle: "Zensus 2022 (1000A-0001, Gemeinde) bzw. StLA Sachsen"
+    status: zu_beschaffen   # AUFTRAG A: Gemeinde-Einwohner + Fortschreibung
+
+# ---------------------------------------------------------------------------
+# 2 WÄRMEBEDARF  — AUFTRAG 1 (entscheidungswirksam: Nenner der LCOH, §6)
+#   Aktuelle Codewerte (6800 / 1200 MWh/a) sind ILLUSTRATIV und zu ersetzen.
+# ---------------------------------------------------------------------------
+waermebedarf:
+  segment_haushalt:
+    q0:
+      wert: null            # Code-Platzhalter: 6800 (illustrativ) -> ersetzen
+      einheit: "MWh/a"
+      quelle: >
+        Zensus 2022 (4000W-1012 Energieträger der Heizung + Wohnungen je
+        Gemeinde) auf Gemeindeebene; ergänzend Hotmaps-Wärmebedarfsraster.
+      status: zu_beschaffen
+  segment_industrie:
+    q0:
+      wert: null            # Code-Platzhalter: 1200 (illustrativ) -> ersetzen
+      einheit: "MWh/a"
+      quelle: "kommunale Bestandsanalyse § 13 WPG / Gewerbebefragung; Hotmaps"
+      status: zu_beschaffen
+
+# ---------------------------------------------------------------------------
+# 3 TRAJEKTORIE (Bedarfsdynamik)
+# ---------------------------------------------------------------------------
+trajektorie:
+  bevoelkerungsrate:
+    wert: null              # AUFTRAG 3: regionale Landkreis-Rate pinnen
+    einheit: "%/a"
+    quelle: >
+      9. Regionalisierte Bevölkerungsprognose Sachsen (StLA, 07.05.2026),
+      LANDKREIS Erzgebirgskreis; Landesweit -0,55 %/a primär verifiziert,
+      Erzgebirge ~ -1,0 %/a noch mit Datenblatt/Seite zu pinnen.
+    status: zu_beschaffen
+  effizienzrate:
+    wert: -1.0
+    einheit: "%/a"
+    quelle: "dena-Gebäudereport 2026, Abb. 76 (klimabereinigt); sinngemäß"
+    status: belegt
+  bedarfsrate_kombiniert:
+    wert: -2.0              # = Bevölkerung + Effizienz; Bevölkerungsteil noch offen
+    einheit: "%/a"
+    quelle: "kombiniert aus 9. RBV + dena Abb. 76"
+    status: illustrativ     # wird belegt, sobald Landkreis-Rate gepinnt (Auftrag 3)
+
+# ---------------------------------------------------------------------------
+# 4 NETZ  — AUFTRAG 2 (Q_l = schwächster Punkt der Datenkette) + AUFTRAG 4 (Förderung)
+# ---------------------------------------------------------------------------
+netz:
+  terrain:
+    wert: "unbefestigt/laendlich"
+    einheit: "-"
+    quelle: "Einordnung Erzgebirge, ländlich"
+    status: annahme
+  spez_investition_je_jahreswaerme:
+    wert: 739
+    einheit: "EUR/(MWh*a)"
+    quelle: "KWW-Technikkatalog Wärmeplanung v1.1 (2024), Tab 42, Z. 17; sinngemäß"
+    status: belegt          # C/Q_l-Anker ländlich; €2023 real
+  waermeliniendichte_ql:
+    wert: null              # AUFTRAG 2: treibt c_d hyperbolisch + Netz-vs-dez-Knick
+    einheit: "MWh/(m*a)"
+    quelle: >
+      GIS/Siedlungsgeometrie (Hotmaps, kommunale Wärmeplanung); alternativ
+      Terrain-Proxy via TK Tab 42 Z. 25-27 (Hauptleitung EUR/m) x Anschlussgrad.
+    status: zu_beschaffen
+  anschlussgrad:
+    wert: null              # AUFTRAG 2 (Teil): zentrale Stellgröße der Netzwirtschaftlichkeit
+    einheit: "%"
+    quelle: "kommunale Wärmeplanung / Annahmeband, lokal zu konkretisieren"
+    status: zu_beschaffen
+  verlustanteil:
+    wert: 16.0
+    einheit: "%"
+    quelle: "KWW-TK v1.1, Tab 42: Leitung 12,3 % (Z. 8) + Übergabe 4,5 % (Z. 11); sinngemäß"
+    status: belegt
+  lebensdauer:
+    wert: 40
+    einheit: "a"
+    quelle: "KWW-TK v1.1, Tab 42, Z. 14; sinngemäß"
+    status: belegt
+  trassenlaenge_m:
+    wert: 6262.2
+    einheit: "m"
+    quelle: "Hotmaps heat_tot/gfa_tot (2015, CC BY 4.0, DOI 10.5281/zenodo.4687129);
+             effektive Breite je Hektarzelle nach Persson & Werner (2011), S. 571 Gl. (8);
+             Gebietsabgrenzung plot ratio >= 0.15, ebd. S. 574;
+             Gemeindeumriss VG250 GF=4, Gebietsstand 15.05.2022 (BKG);
+             49 qualifizierende Hektarzellen"
+    status: hergeleitet
+  waermelieferung_mwh_a:
+    wert: 12678.1
+    einheit: "MWh/a"
+    quelle: "Hotmaps heat_tot_curr_density (2015, Endenergie), Rohsumme 17.895 MWh/a
+             ueber 49 Hektarzellen; korrigiert x0.8700 -> x0.8143 (Gesamtfaktor 0.7085);
+             K1 Endenergie->Nutzwaerme eta=0.87 (M6-Band 0,82..0,92, Mitte; ANNAHME,
+             belegbar ueber Energietraegermix Zensus 2022);
+             K2 Bezugsjahr 2015+11a mit r=-0.0185"
+    status: hergeleitet
+
+# ---------------------------------------------------------------------------
+# 5 ERZEUGER (Kennwerte = Punktwerte in belegten TK-Bändern; §6 "belegt lassen")
+# ---------------------------------------------------------------------------
+erzeuger:
+  grubenwasser_wp:        # S3-Baustein (Grundlast)
+    jahresarbeitszahl:
+      wert: 3.0
+      einheit: "-"
+      quelle: "KWW-TK v1.1, Tab 28, Z. 7 (Großwärmepumpe Gewässer); sinngemäß"
+      status: belegt
+    quellentemperatur:
+      wert: 26.0
+      einheit: "degC"
+      quelle: "WHZ Zwickau (26 °C aus 628 m); TU Bergakademie Freiberg 12-30 °C"
+      status: belegt        # Hinweis: >Oberflächengewässer -> JAZ-Sensitivität nach oben
+    investitionskosten:
+      wert: 978             # Code nutzt 700 (illustrativ) -> Diskrepanz s. _hinweise
+      einheit: "EUR/kW"
+      quelle: "KWW-TK v1.1, Tab 28, Z. 10 (10 MW; 50 MW: 279); sinngemäß"
+      status: belegt
+    betriebskosten_fix_satz:
+      wert: 0.025
+      einheit: "-"
+      quelle: "KWW-TK v1.1, Tab 28, Z. 14 (24/978); sinngemäß"
+      status: belegt
+    emissionsfaktor:
+      wert: 0.260
+      einheit: "t/MWh"
+      quelle: "KWW-TK v1.1, Tab 1 (Strom-Mix-D 2025, 260 g/kWh); sinngemäß"
+      status: belegt        # Trajektorie 2030:110 ... 2045:15 g/kWh -> FF3, später
+  biomasse:               # S1-Baustein / Spitzenlast
+    wirkungsgrad:
+      wert: 0.88
+      einheit: "-"
+      quelle: "KWW-TK v1.1 (Biomasse-Heizwerk); Zeile beim Übertrag pinnen"
+      status: illustrativ
+    investitionskosten:
+      wert: null            # Code: 450-600 (illustrativ) -> TK-Zeile pinnen
+      einheit: "EUR/kW"
+      quelle: "KWW-TK v1.1 (Biomasse-Heizwerk); Tab/Zeile zu pinnen"
+      status: zu_beschaffen
+    emissionsfaktor:
+      wert: 0.020
+      einheit: "t/MWh"
+      quelle: "KWW-TK v1.1, Tab 1 (Holz biogen, 20 g/kWh); sinngemäß"
+      status: belegt
+
+# ---------------------------------------------------------------------------
+# 6 REALISIERUNG (finanzielle Rahmenparameter)
+# ---------------------------------------------------------------------------
+realisierung:
+  wacc:
+    wert: 0.045
+    einheit: "-"
+    quelle: ""
+    status: annahme         # Sensitivitätsparameter, kein Kommunenwert
+  volllaststunden:
+    wert: 2500
+    einheit: "h/a"
+    quelle: "Auslegungsannahme Nahwärme-Heizwerk"
+    status: annahme
+  energiepreis_strom:
+    wert: null              # Code: 200 (illustrativ) -> TK/SAENA-Band belegen
+    einheit: "EUR/MWh"
+    quelle: "KWW-TK v1.1 / SAENA regionale Marktdaten"
+    status: zu_beschaffen
+  energiepreis_holz:
+    wert: 32.5
+    einheit: "EUR/MWh"
+    quelle: "Band (Hackschnitzel); TK/SAENA-Beleg beim Übertrag pinnen"
+    status: illustrativ
+  foerderquote_netz:
+    wert: null              # AUFTRAG 4 (M17): BEW für Wärmenetze
+    einheit: "-"
+    quelle: "BEW (Bundesförderung effiziente Wärmenetze), Modul 2/3/4"
+    status: zu_beschaffen
+  foerderquote_dezentral:
+    wert: null              # AUFTRAG 4 (M17): BEG/BAFA für Einzelmaßnahmen
+    einheit: "-"
+    quelle: "BEG/BAFA; KfW"
+    status: zu_beschaffen
+
+# ---------------------------------------------------------------------------
+# 7 POTENZIAL (Sinnhaftigkeits-Grundlage für die LLM-Szenariowahl)
+# ---------------------------------------------------------------------------
+potenzial:
+  grubenwasser:
+    wert: "vorhanden (ehem. Bergbau)"
+    quelle: "TU Bergakademie Freiberg; WHZ Zwickau"
+    status: belegt          # -> S3 stark (✓✓)
+  biomasse:
+    wert: "begrenzt"
+    quelle: >
+      Kompare 2026, Abschn. 6.4 (in 69 % der Kommunen übersteigt der Bedarf
+      2045 das örtliche Potenzial); sinngemäß. Ergänzend Bundeswaldinventur.
+    status: belegt          # -> S1 eher Spitzenlast, nicht Grundlast
+  solarstrahlung:
+    wert: null
+    einheit: "kWh/(m2*a)"
+    quelle: "DWD-Strahlungsdaten / SAENA — nur falls S5-Zelle aktiv"
+    status: zu_beschaffen   # Erwartung: Relief/Strahlung -> S5 Kandidat "nicht sinnvoll"
+
+

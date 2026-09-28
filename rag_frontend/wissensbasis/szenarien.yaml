@@ -1,0 +1,12 @@
+
+S1_biomasse:
+  beschreibung: "Biomasse-Nahwaerme (biomasse-dominant)"
+  grundlast_anteil: 0.20      # WP klein -> ~80 % Bio
+  co2_preis: 55.0
+S3_wp_nahwaerme:
+  beschreibung: "WP-Nahwaerme (WP-dominant)"
+  grundlast_anteil: 0.80
+  co2_preis: 55.0
+S5_solar_wp_speicher:
+  beschreibung: "Solar+WP+Speicher"
+  modelliert: false           # nicht im Modell; qualitativ (LLM-Sinnhaftigkeit) -- S5 schlank
